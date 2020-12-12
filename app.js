@@ -3,7 +3,9 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv/config');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 app.use(cors());
 app.use(bodyParser.json()); 
@@ -14,6 +16,15 @@ mongoose.connect(
     { useUnifiedTopology: true, useNewUrlParser: true },
     () => console.log('connected to DB!') 
 );
+
+//Import route 
+const authroute = require('./routes/auth');  
+const usersroute = require('./routes/user');  
+
+//Middleware
+app.use('/api/auth', authroute);
+app.use('/api/users', usersroute);
+
 
 app.listen(3000, () => {
     console.log('sever is up and ruuning!')
