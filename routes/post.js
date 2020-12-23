@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require('../modules/users');
 const Post = require('../modules/posts');
 const verify = require('../verifyToken');
-const e = require('express');
 
 //get all posts
 router.get('/home', async (req,res) => {
@@ -73,7 +72,7 @@ router.patch('/:postId/editpost', verify, async (req,res) => {
             res.send(editedpost);
             }
         else{
-            res.send('error');
+            res.send('you have no privilage to edit');
         }
         }catch (error) {
         res.send({message:error});
@@ -96,11 +95,75 @@ router.delete('/:postId/delete', verify, async (req,res) => {
                         Post.deleteOne({_id: req.params.postId});
                         res.json('done');
                     }
+                    else
+                        res.json('post does not exists');
                 }            
             });
         else
-            res.json("post does not exists");    
+            res.json("you have no privilage to delete");    
     } catch (error) {
+        res.send({message:error});
+    }
+
+});
+
+//post visibilty
+router.post('/:postId/visibilty', verify, async (req,res) => {
+    const post = await Post.findById(req.params.postId);
+    try {
+        post.hidden = !post.hidden;
+        await post.save();
+        res.send(post);
+    } catch (error) {
+        res.send({message:error});
+    }
+});
+
+//add expression
+router.post('/:postId/like', verify, async (req,res) => {
+    const user = await User.findOne({_id: req.user});    
+    const post = await Post.findById(req.params.postId);
+    try{
+        Post.exists({"_id": post}, async function(err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                if(result){
+                    post.likes = user;
+                    await post.save();
+                    res.json(post.likes);
+                }
+                else{
+                    res.send('already added the expression');
+                }
+            }            
+        }); 
+    }catch(error){
+        res.send({message:error});
+    }
+
+});
+
+//remove expression
+router.post('/:postId/unlike', verify, async (req,res) => {
+    const user = await User.findOne({_id: req.user});    
+    const post = await Post.findById(req.params.postId);
+    try{
+        Post.exists({"_id": post}, async function(err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                if(result){
+                    await post.likes.pop(user);
+                    await post.save();
+                    res.send(post.likes);
+                }
+                else{
+                    res.send('no expression to remove');
+                }
+            }            
+        });
+    }catch(error){
         res.send({message:error});
     }
 

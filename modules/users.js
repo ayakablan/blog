@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('./posts');
+const Comment = require('./comments');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -48,7 +49,22 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
         require: true
-    }]
+    }],
+    following:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        require: true
+    }],
+    followers:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        require: true
+    }],
+    comments:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+        require: true
+    }],
    
 });
 module.exports = mongoose.model('User',userSchema);

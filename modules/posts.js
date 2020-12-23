@@ -16,8 +16,8 @@ const postSchema = new mongoose.Schema({
         require: true
     },
     comments:[{ 
-        body: String, 
-        date: Date 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
     }],
     date:{ 
         type: Date,
@@ -26,10 +26,10 @@ const postSchema = new mongoose.Schema({
     hidden:{
         type: Boolean
     },
-    meta: {
-      votes: Number,
-      favs:  Number
-    }
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }]
 
 });
 

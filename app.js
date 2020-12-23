@@ -3,7 +3,6 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -19,14 +18,16 @@ mongoose.connect(
 );
 
 //Import route 
-const authroute = require('./routes/auth');  
-const usersroute = require('./routes/user');  
-const postsroute = require('./routes/post');  
+const authroutes = require('./routes/auth');  
+const userroutes = require('./routes/user');  
+const postroutes = require('./routes/post');  
+const commentroutes = require('./routes/commet');  
 
 //Middleware
-app.use('/api/auth', authroute);
-app.use('/api/user', usersroute);
-app.use('/api/posts', postsroute);
+app.use('/api/auth', authroutes);
+app.use('/api/user', userroutes);
+app.use('/api/posts', postroutes);
+app.use('/api/post/comment', commentroutes);
 
 
 app.listen(3000, () => {
