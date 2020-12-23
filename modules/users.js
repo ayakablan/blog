@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Post = require('./posts');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -42,7 +43,12 @@ const userSchema = new mongoose.Schema({
     }],
     work:[{
         type: String,
+    }],
+    posts:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        require: true
     }]
-
+   
 });
 module.exports = mongoose.model('User',userSchema);
