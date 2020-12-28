@@ -5,6 +5,22 @@ const Post = require('../modules/posts');
 const Comment = require('../modules/comments');
 const verify = require('../verifyToken');
 
+//view the comment
+router.get('/:postId/:commentID',verify, async (req,res) => { 
+    const post = await Post.findById(req.params.postId);
+    const comment = await Comment.findById(req.params.commentID);
+    try {
+        if((post._id.equals(comment.post._id)) ){       
+            res.send(comment);
+        }
+        else{
+            res.send('error');
+        }
+    }catch (error) {
+            res.send({message:error});
+    }
+});
+
 //add comment
 router.post('/:postId/comment', verify, async (req,res) => {
     try {
@@ -28,7 +44,7 @@ router.post('/:postId/comment', verify, async (req,res) => {
 });
 
 //edit comment
-router.patch('/:postId/:commentID/editcomment', verify, async (req,res) => { 
+router.patch('/:postId/:commentID/edit', verify, async (req,res) => { 
     const user = await User.findOne({_id: req.user});    
     const post = await Post.findById(req.params.postId);
     const comment = await Comment.findById(req.params.commentID);
@@ -51,7 +67,7 @@ router.patch('/:postId/:commentID/editcomment', verify, async (req,res) => {
 
 
 //delete comment
-router.delete('/:postId/:commentID/delete-comment', verify, async (req,res) => {
+router.delete('/:postId/:commentID/delete', verify, async (req,res) => {
     const user = await User.findOne({_id: req.user});    
     const post = await Post.findById(req.params.postId);
     const comment = await Comment.findById(req.params.commentID);
@@ -67,20 +83,20 @@ router.delete('/:postId/:commentID/delete-comment', verify, async (req,res) => {
 
 
 //add expression
-router.post('/:postd/:commentID/like', verify, async (req,res) => {
+router.post('/:postId/:commentID/like', verify, async (req,res) => {
     const user = await User.findOne({_id: req.user});    
     const post = await Post.findById(req.params.postId);
     const comment = await Comment.findById(req.params.commentID);
     try{
         if( post._id.equals(comment.post._id) ){
-            User.exists({"_id": user, "likes": comment}, async function(err, result) {
+            Comment.exists({"_id": comment, "likes": user}, async function(err, result) {
                 if (err) {
                     res.send(err);
                 } else {
-                    if(result){
-                        post.likes = user;
-                        await post.save();
-                        res.json(post.likes);
+                    if(!result){
+                        comment.likes.push(user);
+                        await comment.save();
+                        res.json(comment.likes);
                     }
                     else{
                         res.send('already added the expression');
@@ -100,20 +116,22 @@ router.post('/:postId/:commentID/unlike', verify, async (req,res) => {
     const post = await Post.findById(req.params.postId);
     const comment = await Comment.findById(req.params.commentID);
     try{
-        Post.exists({"_id": post}, async function(err, result) {
-            if (err) {
-                res.send(err);
-            } else {
-                if(result){
-                    await post.likes.pop(user);
-                    await post.save();
-                    res.send(post.likes);
-                }
-                else{
-                    res.send('no expression to remove');
-                }
-            }            
-        });
+        if( post._id.equals(comment.post._id) ){
+            Comment.exists({"_id": comment, "likes": user}, async function(err, result) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    if(result){
+                        comment.likes.pop(user);
+                        await comment.save();
+                        res.json(comment.likes);
+                    }
+                    else{
+                        res.send('no expression to remove');
+                    }
+                }            
+            });
+        }
     }catch(error){
         res.send({message:error});
     }

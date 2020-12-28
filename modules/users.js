@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Post = require('./posts');
 const Comment = require('./comments');
+const Image = require('./images');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -65,6 +66,10 @@ const userSchema = new mongoose.Schema({
         ref: 'Comment',
         require: true
     }],
+    picture:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image'
+    }
    
 });
 module.exports = mongoose.model('User',userSchema);

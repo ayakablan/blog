@@ -4,6 +4,10 @@ const User = require('../modules/users');
 const Post = require('../modules/posts');
 const verify = require('../verifyToken');
 const passport = require('passport');
+const multer = require('multer');
+var fs = require('fs');
+var path = require('path');
+var upload = multer({ dest: 'uploads/' })
 
 //get all users
 router.get('/admin/view-users', verify, async (req,res) => {
@@ -160,11 +164,6 @@ router.post('/unfollow/:userID', verify, async (req,res) => {
     }catch(err) {
         res.send({message:error})
     }
-});
-
-//upload profile picture
-router.post('/upload-photo', verify, async (req,res) => {
-    
 });
 
 //logging out
