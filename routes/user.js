@@ -39,10 +39,61 @@ router.get('/profile', verify, async (req,res) => {
     }
 });
 
-//edit profile---------------------------------------------
+//edit profile
 router.patch('/edit-profile', verify , async (req,res) => {
     try {
-        const user = await User.findOne({_id: req.user});
+        if ((req.body.name != "")&&(req.body.name != null))
+            editeduser = await User.updateOne(
+                {_id: req.user}, 
+                {$set:{name: req.body.name}}
+            );
+        if ((req.body.email != "")&&(req.body.email != null))
+            editeduser = await User.updateOne(
+                {_id: req.user}, 
+                {$set:{email: req.body.email}}
+            );
+        if ((req.body.country != "")&&(req.body.country != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{country: req.body.country}}
+        );
+        if ((req.body.city != "")&&(req.body.city != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{city: req.body.city}}
+        );
+        if ((req.body.gender != "")&&(req.body.gender != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{gender: req.body.gender}}
+        );
+        if ((req.body.birthdate != "")&&(req.body.birthdate != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{birthdate: req.body.birthdate}}
+        );
+        if ((req.body.about != "")&&(req.body.about != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{about: req.body.about}}
+        );
+        if ((req.body.school != "")&&(req.body.school != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{school: req.body.school}}
+        );
+        if ((req.body.work != "")&&(req.body.work != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{work: req.body.work}}
+        );
+        if ((req.body.university != "")&&(req.body.university != null))
+        editeduser = await User.updateOne(
+            {_id: req.user}, 
+            {$set:{university: req.body.university}}
+        );
+        res.send(editeduser);
+
     } catch (error) {
         res.send({message:error});
     }

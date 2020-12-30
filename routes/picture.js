@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const User = require('./modules/users');
-const Image = require('./modules/images');
-const verify = require('./verifyToken');
+const User = require('../modules/users');
+const Image = require('../modules/images');
+const verify = require('../verifyToken');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //upload the image
-router.post('/upload', upload.single('image') , async (req, res) => {
+router.post('/upload', upload.single('image') ,verify, async (req, res) => {
     const user = await User.findOne({_id: req.user});    
     const newPic = new Image({
         img: {

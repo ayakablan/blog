@@ -26,7 +26,7 @@ const authroutes = require('./routes/auth');
 const userroutes = require('./routes/user');  
 const postroutes = require('./routes/post');  
 const commentroutes = require('./routes/commet');  
-const pictureroutes = require('./picture');  
+const pictureroutes = require('./routes/picture');  
 
 //Middlewares
 app.use('/api/auth', authroutes);
